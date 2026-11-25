@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Primeros pasos en Google AI Studio</title>
+<style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background: #f0f2f5; color: #333; }
+    .slide { width: 100%; max-width: 1024px; margin: 20px auto; background: #fff; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); overflow: hidden; min-height: 500px; display: flex; flex-direction: column; }
+    .slide-header { background: #3d5a96; padding: 18px 30px; display: flex; align-items: center; justify-content: space-between; }
+    .slide-header h2 { color: #fff; font-size: 20px; font-weight: 700; }
+    .slide-header .num { color: rgba(255,255,255,0.6); font-size: 14px; }
+    .slide-body { padding: 30px; flex: 1; }
+    .slide-footer { background: #2e4575; padding: 10px 30px; display: flex; justify-content: space-between; color: rgba(255,255,255,0.7); font-size: 12px; }
+    .portada { min-height: 90vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
+    .portada-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #3d5a96 0%, #e8755c 50%, #d05a7e 100%); z-index: 0; }
+    .portada .franja1 { position: absolute; bottom: 0; left: 0; right: 0; height: 12px; background: #e8755c; z-index: 1; }
+    .portada .franja2 { position: absolute; top: 0; right: 0; width: 25%; height: 8%; background: #d05a7e; z-index: 1; }
+    .portada .franja3 { position: absolute; bottom: 0; left: 0; width: 10%; height: 18%; background: #d05a7e; z-index: 1; }
+    .portada .franja4 { position: absolute; bottom: 0; right: 0; width: 15%; height: 12%; background: #e8755c; z-index: 1; }
+    .portada-content { position: relative; z-index: 2; padding: 40px; }
+    .portada .campus { color: rgba(255,255,255,0.7); font-size: 13px; letter-spacing: 4px; font-weight: 700; margin-bottom: 40px; }
+    .portada h1 { color: #fff; font-size: 48px; font-weight: 900; line-height: 1.2; margin-bottom: 8px; text-shadow: 3px 3px 12px rgba(0,0,0,0.2); }
+    .portada h1 span { display: block; font-size: 32px; font-weight: 600; }
+    .portada .tema-label { color: rgba(255,255,255,0.85); font-size: 18px; margin-top: 50px; }
+    .portada .tema { color: #fff; font-size: 28px; font-weight: 700; margin-top: 8px; }
+    .portada .instituto { color: rgba(255,255,255,0.75); font-size: 15px; margin-top: 50px; }
+    .portada .fecha { color: rgba(255,255,255,0.55); font-size: 13px; margin-top: 10px; }
+    h3 { color: #3d5a96; font-size: 22px; margin-bottom: 20px; }
+    h4 { color: #3d5a96; font-size: 18px; margin-bottom: 12px; }
+    .block { background: #fdf4f0; border-left: 5px solid #e8755c; padding: 18px 20px; border-radius: 0 10px 10px 0; margin: 15px 0; }
+    .block-title { font-weight: 700; color: #e8755c; margin-bottom: 6px; }
+    .block-blue { background: #eff2f8; border-left: 5px solid #3d5a96; }
+    .block-blue .block-title { color: #3d5a96; }
+    .block-pink { background: #fdf0f4; border-left: 5px solid #d05a7e; }
+    .block-pink .block-title { color: #d05a7e; }
+    .block-vino { background: #fdf0f2; border-left: 5px solid #691b31; }
+    .block-vino .block-title { color: #691b31; }
+    ul, ol { padding-left: 22px; line-height: 2; }
+    li { margin-bottom: 4px; }
+    .columns { display: flex; gap: 30px; }
+    .columns > div { flex: 1; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #ddd; padding: 10px 14px; text-align: left; }
+    th { background: #3d5a96; color: #fff; }
+    tr:nth-child(even) { background: #f8f9fc; }
+    .tag { display: inline-block; background: #3d5a96; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-right: 6px; }
+    .center { text-align: center; }
+    .final { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; }
+    .final h2 { color: #3d5a96; font-size: 32px; margin-bottom: 20px; }
+    .final p { color: #666; font-size: 18px; }
+    .nav-bar { max-width: 1024px; margin: 10px auto; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .nav-bar button { background: #3d5a96; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 13px; transition: all 0.2s; }
+    .nav-bar button:hover { background: #e8755c; transform: translateY(-2px); }
+    .nav-bar button.activo { background: #d05a7e; }
+    .nav-controls { max-width: 1024px; margin: 10px auto; display: flex; gap: 10px; justify-content: center; }
+    .nav-controls button { background: #3d5a96; color: #fff; border: none; padding: 10px 28px; border-radius: 25px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 15px; transition: all 0.2s; }
+    .nav-controls button:hover { background: #e8755c; transform: scale(1.05); }
+    .counter { max-width: 1024px; margin: 5px auto; text-align: center; font-size: 13px; color: #888; }
+    @media (max-width: 768px) {
+        .portada h1 { font-size: 32px; }
+        .portada h1 span { font-size: 24px; }
+        .portada .tema { font-size: 20px; }
+        .columns { flex-direction: column; }
+        .slide-body { padding: 20px; }
+        .slide-header h2 { font-size: 16px; }
+    }
+
+</style>
+</head>
+<body>
+
+<div class="nav-controls">
+    <button onclick="ant()">&#9664; Anterior</button>
+    <button onclick="sig()">Siguiente &#9654;</button>
+</div>
+<div class="counter" id="counter"></div>
+
+<div id="slides-container"></div>
+
+<script>
+const PORTADA = {
+    "etiqueta": "Tema 1.1 — Unidad 1",
+    "tema": "Primeros pasos en<br>Google AI Studio",
+    "instituto": "Instituto de Capacitación para el Trabajo del Estado de Hidalgo"
+};
+const slides = [
+    {
+        "tipo": "portada"
+    },
+    {
+        "titulo": "Índice",
+        "num": "2 / 33",
+        "body": "\n    <div class=\"columns\" style=\"font-size:18px;line-height:2.2;\">\n        <div><strong style=\"color:#3d5a96;\">1. Conocer la herramienta</strong><br>\n        - Qué es Google AI Studio<br>\n        - Para qué sirve en el negocio<br>\n        - Diferencias con Gemini y ChatGPT<br><br>\n        <strong style=\"color:#3d5a96;\">2. Prepararte</strong><br>\n        - Requisitos<br>\n        - Cuenta de Google<br>\n        - Cómo entrar</div>\n        <div><strong style=\"color:#3d5a96;\">3. Construir</strong><br>\n        - La pantalla principal<br>\n        - El modo Build<br>\n        - Tu primer proyecto<br><br>\n        <strong style=\"color:#3d5a96;\">4. Practicar</strong><br>\n        - Los cinco puntos del prompt<br>\n        - Ejemplos guiados<br>\n        - Ejercicio y checklist<br><br>\n        <strong style=\"color:#3d5a96;\">5. Cerrar</strong><br>\n        - Resumen, autoevaluación y glosario</div>\n    </div>\n    "
+    },
+    {
+        "titulo": "Objetivo de aprendizaje",
+        "num": "3 / 33",
+        "body": "\n    <p style=\"font-size:18px;line-height:1.7;margin-bottom:18px;\">Al terminar este tema podrás <strong>entrar a Google AI Studio, reconocer su pantalla y crear tu primera aplicación sencilla</strong> describiéndola con tus propias palabras.</p>\n    <div class=\"block block-blue\">\n        <div class=\"block-title\">Lo que sabrás hacer</div>\n        <ul>\n            <li>Explicar qué es Google AI Studio y para qué sirve.</li>\n            <li>Entrar con tu cuenta de Google y ubicar el modo Build.</li>\n            <li>Describir una idea de app con los cinco puntos de un buen prompt.</li>\n            <li>Construir, probar y pedir mejoras en lenguaje natural.</li>\n        </ul>\n    </div>\n    <div class=\"block block-vino\">\n        <div class=\"block-title\">Importante</div>\n        No necesitas saber programar. Este tema es la base de toda la unidad: aquí pierdes el miedo a la herramienta.\n    </div>\n    "
+    },
+    {
+        "titulo": "¿Qué es Google AI Studio?",
+        "num": "4 / 33",
+        "body": "\n    <div class=\"columns\">\n        <div>\n            <ul>\n                <li>Plataforma de Google para <strong>crear con modelos de inteligencia artificial</strong>.</li>\n                <li>Funciona en el navegador, sin instalar nada.</li>\n                <li>Tiene dos usos: <strong>probar modelos</strong> y <strong>construir aplicaciones</strong>.</li>\n                <li>El segundo uso se llama <strong>modo Build</strong>.</li>\n            </ul>\n        </div>\n        <div>\n            <div class=\"block block-blue\">\n                <div class=\"block-title\">En una frase</div>\n                Es el taller donde describes una idea y la plataforma la convierte en una aplicación que puedes abrir y compartir.\n            </div>\n        </div>\n    </div>\n    <div class=\"block\" style=\"margin-top:10px;\">\n        <div class=\"block-title\">Ejemplo</div>\n        \"Quiero una app que sume los productos de un pedido y muestre el total.\" Eso, escrito con claridad, ya es el inicio de una aplicación.\n    </div>\n    "
+    },
+    {
+        "titulo": "¿Para qué sirve en un negocio?",
+        "num": "5 / 33",
+        "body": "\n    <table>\n        <tr><th>Necesidad</th><th>Aplicación sencilla</th></tr>\n        <tr><td>Cotizar rápido</td><td>Calculadora de cotizaciones</td></tr>\n        <tr><td>Saber cuánto ganas</td><td>Calculadora de precio y margen</td></tr>\n        <tr><td>Tomar pedidos</td><td>Menú que suma el total</td></tr>\n        <tr><td>Mostrar productos</td><td>Catálogo con botón de WhatsApp</td></tr>\n        <tr><td>Organizar tareas</td><td>Lista de pendientes con prioridades</td></tr>\n    </table>\n    <div class=\"block block-pink\">\n        <div class=\"block-title\">Criterio práctico</div>\n        Sirve cuando la tarea <strong>se repite</strong>, tiene <strong>datos claros</strong> y el resultado <strong>se comprueba fácilmente</strong>.\n    </div>\n    "
+    },
+    {
+        "titulo": "AI Studio, Gemini y ChatGPT",
+        "num": "6 / 33",
+        "body": "\n    <table>\n        <tr><th>Herramienta</th><th>¿Para qué sirve?</th><th>¿Construye apps?</th></tr>\n        <tr><td><strong>Gemini</strong><br>(gemini.google.com)</td><td>Conversar, crear textos, analizar imágenes</td><td>No, responde conversaciones</td></tr>\n        <tr><td><strong>ChatGPT</strong></td><td>Conversar, redactar, generar imágenes</td><td>No de forma directa</td></tr>\n        <tr><td><strong>Google AI Studio</strong></td><td>Construir y probar aplicaciones con IA</td><td><strong>Sí</strong>, en el modo Build</td></tr>\n    </table>\n    <div class=\"block block-blue\" style=\"margin-top:10px;\">\n        Si quieres <strong>conversar</strong>, usa Gemini o ChatGPT. Si quieres que la IA te <strong>construya una herramienta</strong>, usa el modo Build de AI Studio.\n    </div>\n    "
+    },
+    {
+        "titulo": "Requisitos para empezar",
+        "num": "7 / 33",
+        "body": "\n    <div class=\"columns\">\n        <div>\n            <ul>\n                <li>Cuenta personal de <strong>Google</strong> (la misma de Gmail).</li>\n                <li>Navegador actualizado: Chrome, Edge o Firefox.</li>\n                <li>Conexión a internet estable.</li>\n                <li>Computadora o teléfono con navegador.</li>\n            </ul>\n        </div>\n        <div>\n            <div class=\"block block-blue\">\n                <div class=\"block-title\">No necesitas</div>\n                <ul>\n                    <li>Pagar una suscripción.</li>\n                    <li>Instalar programas.</li>\n                    <li>Saber programar.</li>\n                </ul>\n            </div>\n        </div>\n    </div>\n    <div class=\"block block-vino\">\n        <div class=\"block-title\">Recomendación</div>\n        Trabaja desde una computadora para construir; el teléfono sirve para probar cómo se ve tu app.\n    </div>\n    "
+    },
+    {
+        "titulo": "Tu cuenta de Google",
+        "num": "8 / 33",
+        "body": "\n    <p style=\"font-size:17px;margin-bottom:14px;\">Google AI Studio usa tu cuenta de Google. Si ya tienes Gmail, ya tienes cuenta.</p>\n    <ol style=\"font-size:17px;\">\n        <li>Entra a <strong>aistudio.google.com</strong>.</li>\n        <li>Inicia sesión con tu correo de Gmail.</li>\n        <li>Acepta los términos de uso la primera vez.</li>\n        <li>Verifica que aparezca tu nombre o foto de perfil.</li>\n    </ol>\n    <div class=\"block block-pink\">\n        <div class=\"block-title\">Cuidado</div>\n        Usa una cuenta personal, no una cuenta compartida del trabajo: tus proyectos quedan asociados a ella.\n    </div>\n    "
+    },
+    {
+        "titulo": "Cómo entrar paso a paso",
+        "num": "9 / 33",
+        "body": "\n    <div class=\"columns\">\n        <div>\n            <strong style=\"color:#3d5a96;\">Ruta recomendada</strong>\n            <ol style=\"font-size:16px;\">\n                <li>Abre Chrome.</li>\n                <li>Escribe aistudio.google.com.</li>\n                <li>Inicia sesión.</li>\n                <li>Espera la pantalla principal.</li>\n            </ol>\n        </div>\n        <div>\n            <strong style=\"color:#3d5a96;\">Qué deberías ver</strong>\n            <ul style=\"font-size:16px;\">\n                <li>Un menú lateral con opciones.</li>\n                <li>Un área central para escribir.</li>\n                <li>Botones para crear una app nueva.</li>\n                <li>Tu foto de perfil arriba.</li>\n            </ul>\n        </div>\n    </div>\n    <div class=\"block\">\n        <div class=\"block-title\">Consejo</div>\n        Guarda <strong>aistudio.google.com</strong> en marcadores. Así entras en un clic y evitas buscar la dirección.\n    </div>\n    "
+    },
+    {
+        "titulo": "La pantalla principal",
+        "num": "10 / 33",
+        "body": "\n    <table>\n        <tr><th>Zona</th><th>Para qué sirve</th></tr>\n        <tr><td>Menú lateral</td><td>Ir a inicio, historial, apps y galería</td></tr>\n        <tr><td>Cuadro de descripción</td><td>Escribir qué quieres crear</td></tr>\n        <tr><td>Botón de crear</td><td>Iniciar un proyecto nuevo</td></tr>\n        <tr><td>Galería</td><td>Ver ejemplos y plantillas</td></tr>\n        <tr><td>Perfil</td><td>Cuenta, ajustes y cierre de sesión</td></tr>\n    </table>\n    <div class=\"block block-blue\">\n        La apariencia puede cambiar con las actualizaciones. Busca siempre el <strong>cuadro para describir</strong> y la opción de <strong>crear una app nueva</strong>.\n    </div>\n    "
+    },
+    {
+        "titulo": "¿Qué es el modo Build?",
+        "num": "11 / 33",
+        "body": "\n    <p style=\"font-size:17px;line-height:1.7;\">Build significa <strong>construir</strong>. Es la sección donde describes una aplicación y la plataforma genera el código, el diseño y una vista previa funcional.</p>\n    <div class=\"columns\" style=\"margin-top:10px;\">\n        <div class=\"block block-blue\">\n            <div class=\"block-title\">Qué hace por ti</div>\n            <ul><li>Escribe el código.</li><li>Arma la pantalla.</li><li>Conecta los botones.</li></ul>\n        </div>\n        <div class=\"block\">\n            <div class=\"block-title\">Qué haces tú</div>\n            <ul><li>Decides qué debe hacer.</li><li>Pruebas el resultado.</li><li>Pides mejoras.</li></ul>\n        </div>\n    </div>\n    <div class=\"block block-vino\">\n        <div class=\"block-title\">Idea clave</div>\n        Tú aportas el conocimiento del negocio; la plataforma aporta el trabajo técnico.\n    </div>\n    "
+    },
+    {
+        "titulo": "App web o app de Android",
+        "num": "12 / 33",
+        "body": "\n    <table>\n        <tr><th>Tipo</th><th>Cómo se usa</th><th>Recomendada para</th></tr>\n        <tr><td><strong>Web</strong></td><td>Se abre con un enlace en cualquier navegador</td><td>Empezar y compartir rápido</td></tr>\n        <tr><td><strong>Android</strong></td><td>Se instala en el teléfono</td><td>Uso interno o con clientes frecuentes</td></tr>\n    </table>\n    <div class=\"block\">\n        <div class=\"block-title\">Recomendación para este curso</div>\n        Empieza con una <strong>app web</strong>: no requiere tienda de aplicaciones y se comparte con un enlace.\n    </div>\n    <div class=\"block block-pink\">\n        <div class=\"block-title\">Ojo</div>\n        Una app de Android requiere más pasos de publicación. Déjala para cuando ya domines la versión web.\n    </div>\n    "
+    },
+    {
+        "titulo": "Tu primer proyecto: la idea",
+        "num": "13 / 33",
+        "body": "\n    <p style=\"font-size:17px;margin-bottom:10px;\">Antes de escribir, define la idea en papel. Responde estas preguntas:</p>\n    <ol style=\"font-size:17px;\">\n        <li>¿Qué problema resuelve?</li>\n        <li>¿Quién la va a usar?</li>\n        <li>¿Qué datos necesita?</li>\n        <li>¿Qué resultado debe mostrar?</li>\n        <li>¿Cómo debe verse?</li>\n    </ol>\n    <div class=\"block block-blue\">\n        <div class=\"block-title\">Ejemplo</div>\n        Problema: calcular cotizaciones a mano tarda y se equivoca. Usuarios: la dueña y el mostrador. Datos: producto, cantidad, precio. Resultado: subtotal, IVA y total. Vista: tarjetas simples con botones grandes.\n    </div>\n    "
+    },
+    {
+        "titulo": "Los cinco puntos de un buen prompt",
+        "num": "14 / 33",
+        "body": "\n    <table>\n        <tr><th>Punto</th><th>Pregunta</th><th>Ejemplo</th></tr>\n        <tr><td>Qué hace</td><td>¿Cuál es la función?</td><td>Calcular cotizaciones</td></tr>\n        <tr><td>Quién la usa</td><td>¿Para qué tipo de persona?</td><td>Dueña y mostrador</td></tr>\n        <tr><td>Qué datos pide</td><td>¿Qué debe capturar?</td><td>Producto, cantidad, precio</td></tr>\n        <tr><td>Qué resultado muestra</td><td>¿Qué debe calcular o mostrar?</td><td>Subtotal, IVA, total</td></tr>\n        <tr><td>Cómo se ve</td><td>¿Qué estilo y colores?</td><td>Simple, móvil, colores del negocio</td></tr>\n    </table>\n    <div class=\"block block-vino\">\n        Si tu descripción responde los cinco puntos, la app sale mucho mejor al primer intento.\n    </div>\n    "
+    },
+    {
+        "titulo": "Ejemplo de prompt completo",
+        "num": "15 / 33",
+        "body": "\n    <div class=\"block block-vino\">\n        <div class=\"block-title\">Prompt listo para copiar</div>\n        \"Crea una app para calcular cotizaciones de una florería. La usa la dueña en el mostrador. Debe permitir elegir un producto de una lista con precios, escribir la cantidad y calcular subtotal, IVA del 16% y total. Muestra los resultados en tarjetas grandes, con los colores de la florería (rosa y verde) y que se vea bien en celular. Agrega un botón para imprimir la cotización.\"\n    </div>\n    <div class=\"columns\" style=\"margin-top:5px;\">\n        <div><span class=\"tag\">Claro</span><span class=\"tag\">Con datos</span></div>\n        <div><span class=\"tag\">Con resultado</span><span class=\"tag\">Con diseño</span></div>\n    </div>\n    "
+    },
+    {
+        "titulo": "Qué hace la IA con tu descripción",
+        "num": "16 / 33",
+        "body": "\n    <div class=\"columns\">\n        <div>\n            <strong style=\"color:#3d5a96;\">La plataforma interpreta</strong>\n            <ul>\n                <li>El propósito de la app.</li>\n                <li>Los datos que debe pedir.</li>\n                <li>Los cálculos que debe hacer.</li>\n                <li>El estilo visual.</li>\n            </ul>\n        </div>\n        <div>\n            <strong style=\"color:#3d5a96;\">Y genera</strong>\n            <ul>\n                <li>Una pantalla funcional.</li>\n                <li>Botones y campos.</li>\n                <li>La lógica de los cálculos.</li>\n                <li>Una vista previa.</li>\n            </ul>\n        </div>\n    </div>\n    <div class=\"block block-blue\">\n        <div class=\"block-title\">No es magia</div>\n        Si falta un dato o una regla, la IA tomará un supuesto. Por eso debes probar y corregir.\n    </div>\n    "
+    },
+    {
+        "titulo": "La vista previa",
+        "num": "17 / 33",
+        "body": "\n    <p style=\"font-size:17px;line-height:1.7;\">La vista previa muestra tu app funcionando dentro de la plataforma, sin publicarla. Es tu laboratorio de pruebas.</p>\n    <ul>\n        <li>Revisa que los campos se puedan llenar.</li>\n        <li>Comprueba que los botones respondan.</li>\n        <li>Verifica los cálculos con datos conocidos.</li>\n        <li>Cambia el tamaño de la ventana para simular el celular.</li>\n    </ul>\n    <div class=\"block block-pink\">\n        <div class=\"block-title\">Regla de oro</div>\n        Nunca compartas una app que no probaste al menos <strong>cinco veces</strong> con datos reales.\n    </div>\n    "
+    },
+    {
+        "titulo": "Cómo probar tu app",
+        "num": "18 / 33",
+        "body": "\n    <ol style=\"font-size:17px;line-height:2.1;\">\n        <li>Escribe un caso sencillo y calcula el resultado a mano.</li>\n        <li>Prueba con cantidades grandes y con cero.</li>\n        <li>Deja campos vacíos para ver qué pasa.</li>\n        <li>Prueba con acentos y signos en los textos.</li>\n        <li>Revisa la app en el celular.</li>\n    </ol>\n    <div class=\"block block-blue\" style=\"margin-top:10px;\">\n        <div class=\"block-title\">Consejo</div>\n        Anota los resultados en una tabla: caso, resultado esperado, resultado obtenido. Esa tabla será tu evidencia de la práctica.\n    </div>\n    "
+    },
+    {
+        "titulo": "Pedir cambios en lenguaje natural",
+        "num": "19 / 33",
+        "body": "\n    <p style=\"font-size:17px;margin-bottom:12px;\">No necesitas tocar el código. Pide los cambios como se los pedirías a una persona.</p>\n    <div class=\"block\">\n        <div class=\"block-title\">Ejemplos de cambios</div>\n        <ul>\n            <li>\"Haz los botones más grandes y con el texto en blanco.\"</li>\n            <li>\"Agrega un campo para el nombre del cliente.\"</li>\n            <li>\"Redondea el total a dos decimales.\"</li>\n            <li>\"Que en el celular se vea en una sola columna.\"</li>\n        </ul>\n    </div>\n    <div class=\"block block-pink\">\n        <div class=\"block-title\">Sé específico</div>\n        \"Hazlo más bonito\" no funciona. \"Cambia el fondo a blanco y el título a verde\" sí funciona.\n    </div>\n    "
+    },
+    {
+        "titulo": "Iterar: probar y corregir",
+        "num": "20 / 33",
+        "body": "\n    <div class=\"block block-blue center\" style=\"font-size:18px;\">\n        <strong>Describir → Construir → Probar → Corregir → Repetir</strong>\n    </div>\n    <div class=\"columns\" style=\"margin-top:15px;\">\n        <div>\n            <strong style=\"color:#3d5a96;\">Qué observar</strong>\n            <ul>\n                <li>¿Falla un cálculo?</li>\n                <li>¿Falta un campo?</li>\n                <li>¿Se ve mal en el celular?</li>\n            </ul>\n        </div>\n        <div>\n            <strong style=\"color:#3d5a96;\">Cómo corregir</strong>\n            <ul>\n                <li>Un cambio a la vez.</li>\n                <li>Explica qué esperabas.</li>\n                <li>Verifica después del cambio.</li>\n            </ul>\n        </div>\n    </div>\n    <div class=\"block\">\n        <div class=\"block-title\">Tiempo realista</div>\n        La primera versión toma minutos; dejarla lista para tu negocio puede tomar una o dos horas de ajustes.\n    </div>\n    "
+    },
+    {
+        "titulo": "Ejemplo guiado: cotizador",
+        "num": "21 / 33",
+        "body": "\n    <div class=\"block block-vino\">\n        <div class=\"block-title\">Prompt</div>\n        \"Crea una app de cotizaciones para una papelería. Lista de productos: cuaderno, pluma, mochila, calculadora. Cada uno con precio editable. El usuario elige producto y cantidad, y la app muestra subtotal, IVA y total. Todo en una sola pantalla, letra grande y botón de imprimir.\"\n    </div>\n    <ol style=\"margin-top:10px;\">\n        <li>Genera la app y revisa la lista.</li>\n        <li>Cambia un precio y verifica el total.</li>\n        <li>Pide que el botón de imprimir muestre solo la cotización.</li>\n    </ol>\n    "
+    },
+    {
+        "titulo": "Ejemplo guiado: menú con totales",
+        "num": "22 / 33",
+        "body": "\n    <div class=\"block block-vino\">\n        <div class=\"block-title\">Prompt</div>\n        \"Crea el menú digital de una fonda. Platillos con precio: enchiladas 85, tacos 60, sopa 45, agua 20. El cliente elige cantidades y la app suma el total del pedido. Muestra el total en grande y un botón para enviar el pedido por WhatsApp.\"\n    </div>\n    <div class=\"block block-blue\" style=\"margin-top:10px;\">\n        <div class=\"block-title\">Qué probar</div>\n        Pedido de dos enchiladas y un agua: el total debe ser 190. Si no coincide, pide la corrección con el ejemplo.\n    </div>\n    "
+    },
+    {
+        "titulo": "Ejemplo guiado: calculadora de finanzas",
+        "num": "23 / 33",
+        "body": "\n    <div class=\"block block-vino\">\n        <div class=\"block-title\">Prompt</div>\n        \"Crea una calculadora para saber a qué precio vender un producto. Pide el costo, el margen deseado en porcentaje y el IVA. Calcula el precio de venta, la ganancia y el precio final con IVA. Explica el resultado en una línea sencilla.\"\n    </div>\n    <div class=\"columns\" style=\"margin-top:10px;\">\n        <div class=\"block block-pink\">\n            <div class=\"block-title\">Verifica</div>\n            Costo 100 y margen 40%: precio 140, IVA 22.40, final 162.40.\n        </div>\n        <div class=\"block\">\n            <div class=\"block-title\">Mejora</div>\n            \"Agrega una tabla con tres escenarios de margen: 20%, 35% y 50%.\"\n        </div>\n    </div>\n    "
+    },
+    {
+        "titulo": "Ejemplo guiado: marketplace sencillo",
+        "num": "24 / 33",
+        "body": "\n    <div class=\"block block-vino\">\n        <div class=\"block-title\">Prompt</div>\n        \"Crea un catálogo de productos de una tienda de abarrotes. Cada producto muestra nombre, precio y botón de WhatsApp con el mensaje 'Quiero pedir [producto]'. Que se vea como tarjetas en el celular y con un buscador arriba.\"\n    </div>\n    <div class=\"block block-blue\">\n        <div class=\"block-title\">Importante</div>\n        Un marketplace completo requiere pagos y cuentas. Para empezar, un <strong>catálogo con pedido por WhatsApp</strong> resuelve el 80% de la necesidad.\n    </div>\n    "
+    },
+    {
+        "titulo": "Buenas prácticas de prompts",
+        "num": "25 / 33",
+        "body": "\n    <ul style=\"font-size:17px;line-height:2.1;\">\n        <li>Escribe <strong>en tus palabras</strong>, sin tecnicismos.</li>\n        <li>Incluye <strong>ejemplos reales</strong> de tu negocio.</li>\n        <li>Indica <strong>qué no debe hacer</strong>.</li>\n        <li>Separa una tarea grande en varias pequeñas.</li>\n        <li>Pide <strong>un cambio a la vez</strong>.</li>\n        <li>Guarda los prompts que funcionan.</li>\n    </ul>\n    <div class=\"block block-pink\">\n        <div class=\"block-title\">Error frecuente</div>\n        Pedir \"una app para mi negocio\" sin detalles. La plataforma no conoce tu negocio: tú debes contárselo.\n    </div>\n    "
+    },
+    {
+        "titulo": "Seguridad y datos desde el inicio",
+        "num": "26 / 33",
+        "body": "\n    <div class=\"block block-vino\">\n        <div class=\"block-title\">Regla principal</div>\n        Una app publicada puede verla cualquier persona. <strong>No pidas ni muestres datos personales de clientes.</strong>\n    </div>\n    <div class=\"columns\">\n        <div>\n            <strong style=\"color:#3d5a96;\">Nunca incluyas</strong>\n            <ul>\n                <li>Contraseñas.</li>\n                <li>Tarjetas o cuentas.</li>\n                <li>Identificaciones.</li>\n                <li>Teléfonos de clientes.</li>\n            </ul>\n        </div>\n        <div>\n            <strong style=\"color:#3d5a96;\">Mejor práctica</strong>\n            <ul>\n                <li>Usa datos de ejemplo.</li>\n                <li>Prueba con nombres ficticios.</li>\n                <li>Borra los datos de prueba.</li>\n            </ul>\n        </div>\n    </div>\n    "
+    },
+    {
+        "titulo": "Errores comunes de principiante",
+        "num": "27 / 33",
+        "body": "\n    <table>\n        <tr><th>Error</th><th>Qué provoca</th><th>Solución</th></tr>\n        <tr><td>Prompt vago</td><td>App genérica</td><td>Usar los cinco puntos</td></tr>\n        <tr><td>No probar</td><td>Errores con el cliente</td><td>Probar cinco casos</td></tr>\n        <tr><td>Cambiar todo a la vez</td><td>Se rompe lo que servía</td><td>Un cambio por vez</td></tr>\n        <tr><td>Ignorar el celular</td><td>Se ve mal en pantalla pequeña</td><td>Revisar en el teléfono</td></tr>\n        <tr><td>Usar datos reales</td><td>Riesgo de privacidad</td><td>Datos de ejemplo</td></tr>\n    </table>\n    "
+    },
+    {
+        "titulo": "Ejercicio práctico",
+        "num": "28 / 33",
+        "body": "\n    <p style=\"font-size:17px;margin-bottom:10px;\"><strong>Meta:</strong> crear tu primera app funcional y documentarla.</p>\n    <ol style=\"font-size:16px;line-height:2;\">\n        <li>Escribe la idea de tu negocio en una hoja.</li>\n        <li>Responde los cinco puntos del prompt.</li>\n        <li>Entra a AI Studio y crea la app en modo Build.</li>\n        <li>Pide al menos tres mejoras.</li>\n        <li>Prueba cinco resultados contra cálculos a mano.</li>\n        <li>Guarda capturas de la app y del prompt.</li>\n    </ol>\n    <div class=\"block block-blue\">\n        <div class=\"block-title\">Entregable</div>\n        Un PDF con la descripción, el prompt, las capturas y la tabla de pruebas.\n    </div>\n    "
+    },
+    {
+        "titulo": "Checklist de la práctica",
+        "num": "29 / 33",
+        "body": "\n    <ul style=\"font-size:17px;line-height:2.2;\">\n        <li>Mi idea resuelve un problema real del negocio.</li>\n        <li>El prompt responde los cinco puntos.</li>\n        <li>La app abre y se puede usar.</li>\n        <li>Los cálculos coinciden con mis pruebas a mano.</li>\n        <li>Se ve bien en el celular.</li>\n        <li>No incluye datos personales de clientes.</li>\n        <li>Guardé capturas y el prompt final.</li>\n    </ul>\n    <div class=\"block block-pink\">\n        Si marcaste todo, ya tienes el insumo para el tema 1.3, donde mejorarás la app con cambios más avanzados.\n    </div>\n    "
+    },
+    {
+        "titulo": "Resumen",
+        "num": "30 / 33",
+        "body": "\n    <ul style=\"font-size:17px;line-height:2.2;\">\n        <li>Google AI Studio es una plataforma gratuita de Google para crear con IA.</li>\n        <li>El <strong>modo Build</strong> convierte una descripción en una app.</li>\n        <li>Los <strong>cinco puntos</strong> del prompt son la base del resultado.</li>\n        <li>Probar y pedir mejoras es parte del trabajo, no un extra.</li>\n        <li>La seguridad de los datos empieza desde la primera versión.</li>\n    </ul>\n    <div class=\"block center\" style=\"margin-top:15px;\">\n        <div class=\"block-title\">Frase final</div>\n        <em>\"La IA construye la herramienta; tú aportas el conocimiento del negocio.\"</em>\n    </div>\n    "
+    },
+    {
+        "titulo": "Autoevaluación",
+        "num": "31 / 33",
+        "body": "\n    <ol style=\"font-size:17px;line-height:2.3;\">\n        <li>¿Qué diferencia hay entre AI Studio y Gemini?</li>\n        <li>¿Qué hace el modo Build?</li>\n        <li>Menciona los cinco puntos de un buen prompt.</li>\n        <li>¿Por qué no debes usar datos reales de clientes?</li>\n        <li>¿Qué haces si un cálculo sale mal?</li>\n    </ol>\n    <div class=\"block block-blue\" style=\"margin-top:10px;\">\n        <div class=\"block-title\">Para reflexionar</div>\n        ¿Cuál sería la primera app que usarías en tu negocio y por qué?\n    </div>\n    "
+    },
+    {
+        "titulo": "Glosario",
+        "num": "32 / 33",
+        "body": "\n    <table style=\"font-size:14px;\">\n        <tr><th>Término</th><th>Significado</th></tr>\n        <tr><td>Prompt</td><td>Descripción o instrucción que le das a la IA.</td></tr>\n        <tr><td>Modo Build</td><td>Sección para construir aplicaciones.</td></tr>\n        <tr><td>Vista previa</td><td>Vista de la app funcionando antes de publicarla.</td></tr>\n        <tr><td>App web</td><td>Aplicación que se abre con un enlace en el navegador.</td></tr>\n        <tr><td>Iterar</td><td>Probar, corregir y volver a probar.</td></tr>\n        <tr><td>Datos de ejemplo</td><td>Información ficticia para probar sin exponer a clientes.</td></tr>\n    </table>\n    "
+    },
+    {
+        "titulo": "Gracias por su atención",
+        "num": "33 / 33",
+        "body": "<div class=\"final\">\n            <h2>¿Dudas o comentarios?</h2>\n            <p>Participa en el foro del tema</p>\n            <p style=\"margin-top:30px;color:#3d5a96;font-weight:700;\">ICATHI 4.0 — Inteligencia Artificial para tu Negocio</p>\n        </div>"
+    }
+];
+
+let actual = 0;
+
+function renderSlide(i) {
+    const s = slides[i];
+    const c = document.getElementById('slides-container');
+    if (s.tipo === 'portada') {
+        c.innerHTML = '<div class="slide portada">' +
+            '<div class="portada-bg"></div>' +
+            '<div class="franja1"></div><div class="franja2"></div><div class="franja3"></div><div class="franja4"></div>' +
+            '<div class="portada-content">' +
+            '<div class="campus">CAMPUS VIRTUAL</div>' +
+            '<h1>Inteligencia Artificial<span>para tu Negocio</span></h1>' +
+            '<div class="tema-label">' + PORTADA.etiqueta + '</div>' +
+            '<div class="tema">' + PORTADA.tema + '</div>' +
+            '<div class="instituto">' + PORTADA.instituto + '</div>' +
+            '<div class="fecha">2026</div>' +
+            '</div></div>';
+    } else {
+        c.innerHTML = '<div class="slide">' +
+            '<div class="slide-header"><h2>' + s.titulo + '</h2><span class="num">' + s.num + '</span></div>' +
+            '<div class="slide-body">' + s.body + '</div>' +
+            '<div class="slide-footer"><span>ICATHI 4.0</span><span>' + s.num + '</span></div>' +
+            '</div>';
+    }
+    document.getElementById('counter').textContent = 'Diapositiva ' + (i + 1) + ' de ' + slides.length;
+    document.querySelectorAll('.nav-bar button').forEach((b, idx) => {
+        b.classList.toggle('activo', idx === i);
+    });
+}
+
+function sig() {
+    if (actual < slides.length - 1) { actual++; renderSlide(actual); }
+}
+function ant() {
+    if (actual > 0) { actual--; renderSlide(actual); }
+}
+
+// Nav bar
+document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.createElement('div');
+    nav.className = 'nav-bar';
+    slides.forEach((_, i) => {
+        const b = document.createElement('button');
+        b.textContent = i + 1;
+        b.onclick = () => { actual = i; renderSlide(i); };
+        nav.appendChild(b);
+    });
+    document.body.insertBefore(nav, document.querySelector('.nav-controls'));
+    renderSlide(0);
+});
+</script>
+
+</body>
+</html>
